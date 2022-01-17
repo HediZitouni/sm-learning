@@ -10,7 +10,9 @@ const fromString = (s: string): BigNumber => {
   }
 }
 
-const add = (n1: BigNumber, n2: BigNumber): BigNumber => undefined
+const add = (n1: BigNumber, n2: BigNumber): BigNumber => {
+  return n1 + n2
+}
 
 const multiply = (n1: BigNumber, n2: BigNumber): BigNumber => undefined
 
