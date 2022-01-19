@@ -16,6 +16,7 @@ const fromString = (s: string): BigNumber => {
     index -= MAX_AUTHORIZED_DIGITS
   }
   bigNumber.push(+s.substr(0, index))
+  // Unit at the end of the array
   return bigNumber.reverse()
 }
 
@@ -25,6 +26,7 @@ const add = (n1: BigNumber, n2: BigNumber): BigNumber => {
 
 function reccursiveAdd (n1: BigNumber, n2: BigNumber, addOne = 0): BigNumber {
   if (n1.length <= 1 && n2.length <= 1) {
+    // ASSERT : SUM < Number.MAX_SAFE_NUMBER
     const sum = (n1[0] || 0) + (n2[0] || 0) + addOne
     const currentAddOne = +(sum >= MAX_BEFORE_ADDING_ONE)
     if (currentAddOne) {
