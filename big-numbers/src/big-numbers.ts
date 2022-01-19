@@ -45,7 +45,53 @@ function reccursiveAdd (n1: BigNumber, n2: BigNumber, addOne = 0): BigNumber {
   return [...reccursiveAdd(n1, n2, willAddOne), subSum]
 }
 
-const multiply = (n1: BigNumber, n2: BigNumber): BigNumber => undefined
+const mapMulti = new Map()
+const multiply = (n1: BigNumber, n2: BigNumber): BigNumber => {
+  mapMulti.clear()
+  return reccursiveBigNumberMultiply(n1, n2)
+}
+
+function reccursiveBigNumberMultiply (n1: BigNumber, n2: BigNumber): BigNumber {
+  if (n2.length === 0) return []
+
+  const poppedN2 = n2.pop() || 0
+  const subMultiply = reccursiveMultiply([...n1], poppedN2)
+
+  const restMultiplied = multiply(n1, n2)
+  restMultiplied.push(0) // Equivalent with multy by 10 ** MAX_AUTHORIZED_DIGITS
+  return reccursiveAdd([...restMultiplied], [...subMultiply])
+}
+
+function reccursiveMultiply (n1: BigNumber, n2: number): BigNumber {
+  if (n2 === 2) {
+    if (!mapMulti.has(n2)) mapMulti.set(n2, reccursiveAdd([...n1], [...n1]))
+    return mapMulti.get(n2)
+  }
+  if (n2 === 1) return [...n1]
+  if (n2 === 0) return [0]
+
+  const halfN2 = n2 / 2
+  let multiplicator1, multiplicator2
+  if (n2 % 2) {
+    multiplicator1 = Math.ceil(halfN2)
+    multiplicator2 = Math.floor(halfN2)
+  } else {
+    multiplicator1 = halfN2
+    multiplicator2 = halfN2
+  }
+
+  if (!mapMulti.has(multiplicator1)) {
+    mapMulti.set(multiplicator1, reccursiveMultiply([...n1], multiplicator1))
+  }
+  if (!mapMulti.has(multiplicator2)) {
+    mapMulti.set(multiplicator2, reccursiveMultiply([...n1], multiplicator2))
+  }
+
+  return reccursiveAdd(
+    [...mapMulti.get(multiplicator1)],
+    [...mapMulti.get(multiplicator2)]
+  )
+}
 
 const toString = (n: BigNumber): string => {
   let str = `${n[0]}`
